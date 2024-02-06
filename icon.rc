@@ -1,0 +1,24 @@
+id ICON "assets/icon.ico"
+1 VERSIONINFO
+FILEVERSION     1,0,0,0
+PRODUCTVERSION  1,0,0,0
+BEGIN
+  BLOCK "StringFileInfo"
+  BEGIN
+    BLOCK "040904E4"
+    BEGIN
+      VALUE "CompanyName", "XertroV"
+      VALUE "FileDescription", "E++ Server"
+      VALUE "FileVersion", "0.1.0"
+      VALUE "InternalName", "Dope Ass Server"
+      VALUE "LegalCopyright", "None"
+      VALUE "OriginalFilename", "tm_wallhacks.exe"
+      VALUE "ProductName", "E++ Server"
+      VALUE "ProductVersion", "0.1.0"
+    END
+  END
+  BLOCK "VarFileInfo"
+  BEGIN
+    VALUE "Translation", 0x409, 1252
+  END
+END
