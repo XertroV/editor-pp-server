@@ -19,11 +19,21 @@ use text_to_ascii_art::convert;
 
 mod config;
 
+const VERSION: &str = env!("CARGO_PKG_VERSION");
+
 #[tokio::main]
 async fn main() {
     // set log level to info
-    println!("{}\n\nQuestions and support: @XertroV on Openplanet discord.\n\n", convert("E++ Server".into()).unwrap());
+    println!("{}\n\nVersion: {}\nQuestions and support: @XertroV on Openplanet discord.\n\n", convert("E++ Server".into()).unwrap(), VERSION);
+    // check for --help
+    for arg in std::env::args() {
+        if arg == "--help" {
+            println!("Usage: Just run the exe. Check the config file `editor-pp-server.toml` for options.\n\n--help is the only supported cli argument.");
+            return;
+        }
+    }
     simple_log::quick!("info");
+
     match run_app().await {
         Ok(_) => (),
         Err(e) => error!("Error: {:?}", e)
@@ -37,6 +47,9 @@ async fn run_app() -> Result<(), Box<dyn std::error::Error>> {
     let ip_addr = IpAddr::from_str(&config.server.host)?;
     let soc_addr: SocketAddr = SocketAddr::new(ip_addr, config.server.port);
 
+    let version_route = warp::path!("version")
+        .and(warp::path::end())
+        .map(|| VERSION);
 
     info!("Enabling route: POST e++/lm-analysis/convert/webp");
     let lm_analysis = warp::path!("e++" / "lm-analysis" / "convert" / "webp")
@@ -65,7 +78,7 @@ async fn run_app() -> Result<(), Box<dyn std::error::Error>> {
         })
         ;
 
-    warp::serve(lm_analysis.or(lm_analysis_local_route).with(warp::log("lm-analysis")))
+    warp::serve(lm_analysis.or(lm_analysis_local_route).or(version_route).with(warp::log("lm-analysis")))
         .run(soc_addr)
         .await;
 
@@ -137,7 +150,7 @@ async fn process_zip<R>(reader: BufReader<R>) -> Result<Vec<(String, Cursor<Vec<
             Some(path) => path.to_owned(),
             None => return Err("bad path".into()),
         };
-        info!("Processing file: {}", path.to_str().unwrap());
+        debug!("Processing file: {}", path.to_str().unwrap());
         let mut data = Vec::new();
         file.read_to_end(&mut data).unwrap();
         archives.push((path, data));
@@ -146,19 +159,19 @@ async fn process_zip<R>(reader: BufReader<R>) -> Result<Vec<(String, Cursor<Vec<
     let futures: Vec<_> = archives.into_iter().map(|(path, data)| {
         task::spawn_blocking(move || {
             if path.to_str() == Some("ProbeGrid.webp") || (path.to_str().unwrap().starts_with("LightMap") && path.to_str().unwrap().ends_with(".webp")) {
-                info!("[Thread {:?}] Loading image: {}", std::thread::current().id(), path.to_str().unwrap());
+                debug!("[Thread {:?}] Loading image: {}", std::thread::current().id(), path.to_str().unwrap());
                 let im = image::load_from_memory(&data).unwrap();
-                info!("[Thread {:?}] Flipping image: {}", std::thread::current().id(), path.to_str().unwrap());
+                debug!("[Thread {:?}] Flipping image: {}", std::thread::current().id(), path.to_str().unwrap());
                 let im = im.flipv();
                 let mut bs: Cursor<Vec<u8>> = Cursor::new(Vec::new());
                 // let mut writer = std::io::BufWriter::new(&mut bs);
-                info!("[Thread {:?}] Saving image: {}", std::thread::current().id(), path.to_str().unwrap());
+                debug!("[Thread {:?}] Saving image: {}", std::thread::current().id(), path.to_str().unwrap());
                 im.write_to(&mut bs, image::ImageOutputFormat::Png).unwrap();
                 let result = (path.to_str().unwrap().replace(".webp", ".png"), bs);
-                info!("[Thread {:?}] Done image: {}\n", std::thread::current().id(), path.to_str().unwrap());
+                debug!("[Thread {:?}] Done image: {}\n", std::thread::current().id(), path.to_str().unwrap());
                 return Ok(result);
             } else {
-                info!("[Thread {:?}] Skipping file: {}\n", std::thread::current().id(), path.to_str().unwrap_or("could not convert path to file name"));
+                debug!("[Thread {:?}] Skipping file: {}\n", std::thread::current().id(), path.to_str().unwrap_or("could not convert path to file name"));
                 return Err("skipped");
             }
         })
