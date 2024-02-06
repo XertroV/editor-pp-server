@@ -35,7 +35,7 @@ pub fn load_config() -> Config {
     // }
     match read_config_from_file("editor-pp-server.toml") {
         Ok(config) => {
-            info!("Loaded config: {:?}", &config);
+            println!("Loaded config: {:?}", &config);
             config
         },
         Err(e) => {
@@ -48,7 +48,7 @@ pub fn load_config() -> Config {
                     ..Default::default()
                 }
             };
-            info!("Loading default config instead: {:?}", c);
+            println!("Loading default config instead: {:?}", c);
             c
         }
     }
