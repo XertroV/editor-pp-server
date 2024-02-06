@@ -2,17 +2,20 @@ use serde_derive::Deserialize;
 use simple_log::log::{info, warn};
 use std::error::Error;
 use std::fs;
-use std::io::{self, Read};
+use std::io::Read;
 
-#[derive(Deserialize, Debug)]
+#[derive(Debug)]
+#[derive(Deserialize)]
 pub struct Config {
     pub server: Server,
 }
 
-#[derive(Deserialize, Debug)]
+#[derive(Debug, Default)]
+#[derive(Deserialize)]
 pub struct Server {
     pub host: String,
     pub port: u16,
+    pub no_local: Option<bool>,
 }
 
 pub fn read_config_from_file(path: &str) -> Result<Config, Box<dyn Error>> {
@@ -24,21 +27,28 @@ pub fn read_config_from_file(path: &str) -> Result<Config, Box<dyn Error>> {
 }
 
 pub fn load_config() -> Config {
-    match read_config_from_file("config.toml") {
+    // Config {
+    //     server: Server {
+    //         host: "127.0.0.1".to_string(),
+    //         port: 38120,
+    //     }
+    // }
+    match read_config_from_file("editor-pp-server.toml") {
         Ok(config) => {
-            info!("Loaded config: {:#?}", &config);
+            info!("Loaded config: {:?}", &config);
             config
         },
         Err(e) => {
-            warn!("Failed to load config: {:#?}", e);
+            warn!("Failed to load config: {:?}", e);
             let c =
             Config {
                 server: Server {
                     host: "127.0.0.1".to_string(),
                     port: 38120,
+                    ..Default::default()
                 }
             };
-            warn!("Loading default config instead: {:#?}", c);
+            info!("Loading default config instead: {:?}", c);
             c
         }
     }

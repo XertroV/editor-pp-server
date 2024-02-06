@@ -39,3 +39,17 @@ pub fn image_to_webp<P: AsRef<Path>>(
 
     Ok(path)
 }
+
+
+
+fn convert_webp_to_png(input_path: &str, output_path: &str) -> Result<(), image::ImageError> {
+    // Load the WebP image
+    let img = ImageReader::open(input_path)?
+        .with_guessed_format()?
+        .decode()?;
+
+    // Save the image as PNG
+    img.save_with_format(output_path, ImageFormat::Png)?;
+
+    Ok(())
+}

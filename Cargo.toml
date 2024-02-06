@@ -1,5 +1,5 @@
 [package]
-name = "epp-lm-analysis-server"
+name = "editor-pp-server"
 version = "0.1.0"
 edition = "2021"
 
@@ -14,5 +14,17 @@ serde_derive = "1.0"
 simple-log = "1.5.1"
 bytes = "1.0"
 zip = "0.6.6"
-webp = "0.2.6"
-image = { version = "0.24.8" }
+# webp = "0.2.6"
+image = { version = "0.24.8", features = ["libwebp"]}
+base64 = "0.21.7"
+tokio-stream = "0.1.14"
+text-to-ascii-art = "0.1.9"
+
+
+
+[profile.release]
+opt-level = 'z'     # Optimize for size
+lto = true          # Enable link-time optimization
+codegen-units = 1   # Reduce number of codegen units to increase optimizations
+# panic = 'abort'     # Abort on panic
+# strip = true        # Strip symbols from binary*

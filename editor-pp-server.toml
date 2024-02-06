@@ -1,0 +1,5 @@
+[server]
+host = "127.0.0.1"
+port = 38120
+# disable the below line to disable reading directly from disk (all files must be uploaded)
+# no_local = true

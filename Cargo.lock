@@ -298,6 +298,24 @@ dependencies = [
 ]
 
 [[package]]
+name = "editor-pp-server"
+version = "0.1.0"
+dependencies = [
+ "base64",
+ "bytes",
+ "image",
+ "serde",
+ "serde_derive",
+ "simple-log",
+ "text-to-ascii-art",
+ "tokio",
+ "tokio-stream",
+ "toml",
+ "warp",
+ "zip",
+]
+
+[[package]]
 name = "either"
 version = "1.9.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -310,22 +328,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "7268b386296a025e474d5140678f75d6de9493ae55a5d709eeb9dd08149945e1"
 dependencies = [
  "cfg-if",
-]
-
-[[package]]
-name = "epp-lm-analysis-server"
-version = "0.1.0"
-dependencies = [
- "bytes",
- "image",
- "serde",
- "serde_derive",
- "simple-log",
- "tokio",
- "toml",
- "warp",
- "webp",
- "zip",
 ]
 
 [[package]]
@@ -545,9 +547,9 @@ dependencies = [
 
 [[package]]
 name = "hermit-abi"
-version = "0.3.4"
+version = "0.3.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "5d3d0e0f38255e7fa3cf31335b3a56f05febd18025f4db5ef7a0cfb4f8da651f"
+checksum = "d0c62115964e08cb8039170eb33c1d0e2388a256930279edca206fff675f82c3"
 
 [[package]]
 name = "hmac"
@@ -674,6 +676,7 @@ dependencies = [
  "png",
  "qoi",
  "tiff",
+ "webp",
 ]
 
 [[package]]
@@ -1397,6 +1400,12 @@ dependencies = [
 ]
 
 [[package]]
+name = "text-to-ascii-art"
+version = "0.1.9"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "fff85e7ccbae668e075f262a80e7315b399cb07fb5dc7ae1cd7261c80d007976"
+
+[[package]]
 name = "thiserror"
 version = "1.0.56"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1541,9 +1550,9 @@ dependencies = [
 
 [[package]]
 name = "toml"
-version = "0.8.9"
+version = "0.8.10"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "c6a4b9e8023eb94392d3dca65d717c53abc5dad49c07cb65bb8fcd87115fa325"
+checksum = "9a9aad4a3066010876e8dcf5a8a06e70a558751117a145c6ce2b82c2e2054290"
 dependencies = [
  "serde",
  "serde_spanned",
@@ -1562,9 +1571,9 @@ dependencies = [
 
 [[package]]
 name = "toml_edit"
-version = "0.21.1"
+version = "0.22.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "6a8534fd7f78b5405e860340ad6575217ce99f38d4d5c8f2442cb5ecb50090e1"
+checksum = "d8dc77def39ce6079c2d0c866cc20848f591b1898f153c9fe7c4f29e1154510b"
 dependencies = [
  "indexmap 2.2.2",
  "serde",
@@ -1789,7 +1798,6 @@ version = "0.2.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "4bb5d8e7814e92297b0e1c773ce43d290bef6c17452dafd9fc49e5edb5beba71"
 dependencies = [
- "image",
  "libwebp-sys",
 ]
 
