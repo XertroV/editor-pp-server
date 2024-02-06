@@ -21,13 +21,13 @@ tokio-stream = "0.1.14"
 text-to-ascii-art = "0.1.9"
 
 
+[build-dependencies]
+winres = "0.1.12"
+
 
 [profile.release]
 opt-level = 'z'     # Optimize for size
 lto = true          # Enable link-time optimization
 codegen-units = 1   # Reduce number of codegen units to increase optimizations
-
-[build-dependencies]
-winres = "0.1.12"
 # panic = 'abort'     # Abort on panic
 # strip = true        # Strip symbols from binary*

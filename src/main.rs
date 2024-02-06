@@ -150,7 +150,7 @@ async fn process_zip<R>(reader: BufReader<R>) -> Result<Vec<(String, Cursor<Vec<
             Some(path) => path.to_owned(),
             None => return Err("bad path".into()),
         };
-        debug!("Processing file: {}", path.to_str().unwrap());
+        info!("Processing file: {}", path.to_str().unwrap());
         let mut data = Vec::new();
         file.read_to_end(&mut data).unwrap();
         archives.push((path, data));
@@ -159,19 +159,19 @@ async fn process_zip<R>(reader: BufReader<R>) -> Result<Vec<(String, Cursor<Vec<
     let futures: Vec<_> = archives.into_iter().map(|(path, data)| {
         task::spawn_blocking(move || {
             if path.to_str() == Some("ProbeGrid.webp") || (path.to_str().unwrap().starts_with("LightMap") && path.to_str().unwrap().ends_with(".webp")) {
-                debug!("[Thread {:?}] Loading image: {}", std::thread::current().id(), path.to_str().unwrap());
+                info!("[Thread {:?}] Loading image: {}", std::thread::current().id(), path.to_str().unwrap());
                 let im = image::load_from_memory(&data).unwrap();
-                debug!("[Thread {:?}] Flipping image: {}", std::thread::current().id(), path.to_str().unwrap());
+                info!("[Thread {:?}] Flipping image: {}", std::thread::current().id(), path.to_str().unwrap());
                 let im = im.flipv();
                 let mut bs: Cursor<Vec<u8>> = Cursor::new(Vec::new());
                 // let mut writer = std::io::BufWriter::new(&mut bs);
-                debug!("[Thread {:?}] Saving image: {}", std::thread::current().id(), path.to_str().unwrap());
+                info!("[Thread {:?}] Saving image: {}", std::thread::current().id(), path.to_str().unwrap());
                 im.write_to(&mut bs, image::ImageOutputFormat::Png).unwrap();
                 let result = (path.to_str().unwrap().replace(".webp", ".png"), bs);
-                debug!("[Thread {:?}] Done image: {}\n", std::thread::current().id(), path.to_str().unwrap());
+                info!("[Thread {:?}] Done image: {}\n", std::thread::current().id(), path.to_str().unwrap());
                 return Ok(result);
             } else {
-                debug!("[Thread {:?}] Skipping file: {}\n", std::thread::current().id(), path.to_str().unwrap_or("could not convert path to file name"));
+                info!("[Thread {:?}] Skipping file: {}\n", std::thread::current().id(), path.to_str().unwrap_or("could not convert path to file name"));
                 return Err("skipped");
             }
         })
